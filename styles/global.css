@@ -1,0 +1,320 @@
+:root {
+  --border-color: #291D4D;
+  --dialog-background: #FFF3B4;
+
+  --menu-background: #FFE8D2;
+  --menu-border-color: #A48465;
+  --menu-font-color: #3A160D;
+  --menu-selected-background: #7fc2ff;
+}
+
+* {
+  box-sizing:border-box;
+}
+
+body {
+  background: #333;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.game-container {
+  position: relative; 
+  width: 352px;
+  height: 198px;
+  margin: 0 auto;
+  outline: 1px solid #fff;
+
+  transform: scale(3) translateY(50%);
+}
+
+.game-container canvas {
+  image-rendering: pixelated;
+}
+
+button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: grey;
+  border:none;
+  color:white;
+  border-radius: 10px;
+}
+
+button:hover{
+  background-color: turquoise;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.97);
+  pointer-events: none;
+  --light-color: rgba(255, 255, 255, 0.15); /* default light */
+
+  mask-image: radial-gradient(
+    circle 30px at var(--x, 50%) var(--y, 50%),
+    var(--light-color) 0%,
+    rgba(0, 0, 0, 0.97) 70%
+  );
+
+  -webkit-mask-image: radial-gradient(
+    circle 30px at var(--x, 50%) var(--y, 50%),
+    var(--light-color) 0%,
+    rgba(0, 0, 0, 0.97) 70%
+  );
+
+  transition: mask-image 0.3s ease, -webkit-mask-image 0.3s ease;
+}
+
+
+.overlay.dark {
+  opacity: 1;
+}
+
+.overlay.light {
+  opacity: 0;
+}
+
+.flashlight-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+
+  --glow-color: rgba(255,255,255,0.3);
+
+  background: radial-gradient(
+    circle 30px at var(--x, 50%) var(--y, 50%),
+    var(--glow-color) 0%,
+    rgba(0, 0, 0, 0) 80%
+  );
+
+  transition: background 0.3s ease;
+}
+
+.glow-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 352px;
+  height: 198px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.object-glow {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: radial-gradient(circle, rgba(0,255,255,0.5) 0%, rgba(0,255,255,0) 70%);
+  animation: glowPulse 1.5s infinite ease-in-out;
+  border-radius: 50%;
+  transform: scale(2);
+}
+
+.yellow-glow {
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 120, 1) 0%,     /* Intense yellow-white center */
+    rgba(255, 200, 0, 0.95) 30%,   /* Bright golden glow */
+    rgba(255, 160, 0, 0.6) 50%,    /* Softer orange outer */
+    rgba(0, 0, 0, 0) 80%           /* Fade to transparent */
+  );
+  position: absolute;
+  width: 120px;   /* bigger radius */
+  height: 120px;
+  border-radius: 50%;
+  z-index: 999;
+  pointer-events: none;
+  opacity: 1;
+  animation: glowPulse 2s infinite ease-in-out;
+}
+
+.key-glow {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 225, 0, 0.9) 0%, rgba(255, 180, 0, 0.3) 60%, rgba(0, 0, 0, 0) 100%);
+  display: none;
+  z-index: 100;
+}
+.key-glow.visible {
+  opacity: 1;
+}
+
+
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(2.3);
+  }
+}
+
+.puzzle-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.puzzle-frame {
+  width: 80%;
+  height: 80%;
+  border: 2px solid white;
+}
+
+#closePuzzleBtn {
+  margin-top: 1rem;
+  padding: 5px 8px;
+  font-size: 8px;
+}
+
+.jumpscare {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.jumpscare img {
+  width: 120px;
+  image-rendering: pixelated;
+  opacity: 0;
+  transform: scale(0.2);
+  animation: rushSequence 3.5s steps(1, end) forwards;
+}
+
+.jumpscare::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: white;
+  opacity: 0;
+  animation: flashEffect 0.2s ease-in 3.4s forwards;
+}
+
+.jumpscare.hidden {
+  display: none;
+}
+
+@keyframes rushSequence {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  5% {
+    opacity: 1;
+    transform: scale(0.2);
+  }
+  40% {
+    transform: scale(0.8);
+  }
+  70% {
+    transform: scale(0.8);
+  }
+  85% {
+    transform: scale(2); /* BIG */
+  }
+  95% {
+    transform: scale(8); /* FINAL ZOOM IN */
+  }
+  100% {
+    transform: scale(8);
+  }
+}
+
+@keyframes flashEffect {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+.death-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9998;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  text-align: center;
+}
+
+.death-screen h1 {
+  font-size: 18px;
+  margin: 10px;
+  font-family:'Courier New', Courier, monospace;
+}
+
+.death-screen button {
+  font-size: 10px;
+  padding: 3px 5px;
+  cursor: pointer;
+  background: white;
+  color: black;
+  border: none;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.death-screen button:hover {
+  background: crimson;
+  color: white;
+}
+
+.death-screen.show {
+  opacity: 1;
+}
+
+.reincarnateHint {
+  font-size: 12px;
+  margin-top: 10px;
+  opacity: 0.8;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+
+

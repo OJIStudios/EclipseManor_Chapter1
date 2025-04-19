@@ -1,0 +1,116 @@
+.item-notification {
+  position: absolute;
+  top: 45px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 3px;
+  height: 24px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fade-in 0.5s ease-in-out;
+}
+
+.item-notification img {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated; /* Makes it look pixelated */
+}
+
+.item-notification p{
+  font-size: 10px;
+  margin-left: -10px;
+}
+
+
+.alert {
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px;
+  height: 15px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: fade-in 0.5s ease-in-out;
+}
+
+.alert p{
+  font-size: 10px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.objective-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 2px 5px;
+  border: 2px solid #ffffff55;
+  border-radius: 10px;
+  font-family: sans-serif;
+  font-size: 7px;
+  z-index: 10;
+  max-width: 250px;
+  transition: all 0.3s ease-in-out;
+}
+
+.objective-box.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.interaction-prompt {
+  position: absolute;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+  padding: 3px 4px;
+  font-family: sans-serif;
+  font-size: 5px;
+  border-radius: 5px;
+  z-index: 999;
+  transition: opacity 0.3s ease;
+  opacity: 1;
+}
+
+.interaction-prompt.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.journal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.journal-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
