@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclispe Manor - Main Menu</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        #loading-screen {
+            position: fixed;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 3; /* Ensure it's above the entity */
+        }
+
+        .loading-bar {
+            width: 100px;
+            height: 5px;
+            background: gray;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-bar::after {
+            content: "";
+            display: block;
+            width: 20px;
+            height: 5px;
+            background: white;
+            position: absolute;
+            animation: loading-animation 1s infinite linear;
+        }
+
+        @keyframes loading-animation {
+            0% { left: 0; }
+            100% { left: 100%; }
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: url('main-background-image.png') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: flex-start; /* Aligns to the left */
+            align-items: center;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        }
+        .container {
+            background: rgba(0, 0, 0, 0.8); /* Black box */
+            color: white;
+            width: 100vw; /* Fills up the page */
+            height: 100vh; /* Fills up the page */
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative; /* Ensure it's above the entity */
+            z-index: 2; /* Ensure it's above the entity */
+        }
+        h1 {
+            font-size: 4rem;
+            color: #66ccff;
+        }
+        h2 {
+            color: white;
+        }
+        .subtitle {
+            font-size: 2rem;
+            font-style: italic;
+            margin-bottom: 40px;
+            margin-top: 20px;
+        }
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .menu button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            text-align: left;
+            margin-left: 40px;
+            font-family: 'Press Start 2P', cursive;
+        }
+        .menu button:hover {
+            color: #66ccff;
+        }
+        .title-line {
+            width: 43%;
+            height: 2px; /* Adjust thickness */
+            background-color: white; /* Adjust color */
+            margin-top: 5px; /* Adjust spacing */
+            margin-left: -50px;
+        }
+        .entity {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1; /* Lower than the container */
+        }
+        #loading-icon {
+            width: 600px; /* Adjust size as needed */
+            height: auto;
+            display: block;
+            margin: 0 auto 10px; /* Center and add spacing */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4;
+            display: none;
+        }
+
+        .modal-content {
+            background: black;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+            color: white;
+            width: 300px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        /* Modal Background */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Modal Content Box */
+        .modal-content {
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 50%;
+        }
+
+        /* Close Button */
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+      <img src="game-icon.png" alt="Game Icon" id="loading-icon">
+      <h1>Loading...</h1>
+      <div class="loading-bar"></div>
+    </div>
+    <!-- Main Game Content (Initially Hidden) -->
+    <div id="game-content" style="display: none;">
+        <!-- Your game UI, menu, or canvas goes here -->
+    </div>
+    
+    <audio id="bg-music" loop>
+      <source src="background-music.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio> 
+    <audio id="click-sound">
+        <source src="click.mp3" type="audio/mpeg">
+    </audio>
+    <div class="container">
+        <h2>CHAPTER 1</h2><br><h1>SILENT ECHO</h1>
+        <div class="title-line"></div>
+        <p class="subtitle">“Some doors should never be opened.”</p>
+        <div class="menu">
+            <a href="pregame.html"><button id="newgame-button"onclick="document.getElementById('click-sound').play()">NEW GAME</button></a>
+            <button id="settings-button" onclick="document.getElementById('click-sound').play()">SETTINGS</button>
+            <button id="credits-button" onclick="document.getElementById('click-sound').play()">CREDITS</button>
+            <a href="index.html"><button onclick="document.getElementById('click-sound').play()">QUIT</button></a>
+        </div>
+    </div>
+    <div id="settings-modal" class="modal">
+      <div class="modal-content">
+          <h2>Settings</h2>
+          
+          <!-- Volume Control -->
+          <label for="volume-slider">Volume:</label>
+          <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="1">
+  
+          <!-- Brightness Control -->
+          <label for="brightness-slider">Brightness:</label>
+          <input type="range" id="brightness-slider" min="0.5" max="1.5" step="0.1" value="1">
+  
+          <!-- Close Button -->
+          <button id="close-settings">Close</button>
+      </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-credits">&times;</span>
+            <h2>CREDITS</h2>
+            <br><p>Game Developer: Chong Lok Phen</p>
+            <br><p>Art & Design: Ivan Rining Chong Ru Han</p>
+            <br><p>Music & Sound: Hew Joe-Vi</p>
+            <br><p>Special Thanks: Madam Aishah</p>
+        </div>
+    </div>
+
+    <img src="main-ghost.png" alt="Entity" class="entity">
+    <script src="main-menu.js"></script>
+</html>

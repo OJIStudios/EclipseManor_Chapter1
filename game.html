@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eclipse Manor - Silent Echo</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link href="styles/global.css" type="text/css" rel="stylesheet">
+    <link href="styles/TextMessage.css" type="text/css" rel="stylesheet">
+    <link href="styles/ItemNotification.css" type="text/css" rel="stylesheet">
+    <link href="styles/SceneTransition.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <button onclick="toggleFullscreen()">Toggle Fullscreen</button>
+
+    <div class="game-container">    
+      <canvas class="game-canvas" width="352" height="198"></canvas>
+      <div class="flashlight-glow"></div>    
+      <div class="overlay"></div>
+      <div id="glowLayer" class="glow-layer"></div>
+      <div class="objective-box" id="objectiveBox">
+        <p id="objectiveText">Objective: ???</p>
+      </div>
+      <!-- Jumpscare overlay -->
+      <div id="jumpscare" class="jumpscare hidden">
+        <img src="images/jumpscare.png" alt="Jumpscare">
+        <audio id="jumpscareSound" src="music/scream.mp3"></audio>
+      </div>
+
+      <!-- Death screen -->
+      <div id="deathScreen" class="death-screen hidden">
+        <h1 id="deathMessage">You Died</h1>
+        <p class="reincarnateHint">Press [E] to reincarnate</p>
+      </div>
+
+      <div id="interactionPrompt" class="interaction-prompt hidden">[E]</div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="utils.js"></script>
+    <script src="DirectionInput.js"></script>
+    <script src="Overworld.js"></script>
+    <script src="GameObject.js"></script>
+    <script src="Person.js"></script>
+    <script src="Sprite.js"></script>
+    <script src="ChasingNPC.js"></script>
+    <script src="OverworldMap.js"></script>
+    <script src="OverworldEvent.js"></script>
+    <script src="TextMessage.js"></script>
+    <script src="KeyPressListener.js"></script>
+    <script src="RevealingText.js"></script>
+    <script src="SceneTransition.js"></script>
+    <script src="LightToggle.js"></script>
+    <script src="init.js"></script>
+
+    <!-- Button -->
+    <script>
+      function toggleFullscreen() {
+          if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen();
+          } else if (document.exitFullscreen) {
+              document.exitFullscreen();
+          }
+      }
+
+      // Create the audio element
+      const bgMusic = new Audio('music/background.mp3');
+      bgMusic.loop = true;
+      bgMusic.volume = 0.5;
+
+      // Try autoplay
+      window.addEventListener('load', () => {
+        bgMusic.play().then(() => {
+          console.log("Autoplay success");
+        }).catch(err => {
+          console.warn("Autoplay blocked. Waiting for user interaction...");
+        });
+      });
+
+      // Resume music on first user interaction
+      document.addEventListener('click', () => {
+        if (bgMusic.paused) {
+          bgMusic.play();
+          console.log("Music started after click");
+        }
+      });
+    </script>
+
+  </body>
+</html>

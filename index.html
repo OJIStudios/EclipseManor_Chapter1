@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse Manor - RPG Dungeon Crawler Horror</title>
+    <style>
+        :root {
+            --primary: #1b91a5;
+            --primary-dark: #045563;
+            --primary-light: rgba(36, 161, 72, 0.2);
+            --accent: #5d4d7a;
+            --accent-dark: #3a2d4d;
+            --bg-dark: #121820;
+            --bg-darker: #0d1218;
+            --bg-card: #1a252f;
+            --bg-card-light: #22303f;
+            --text-main: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-highlight: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            width: 100vw;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('hero-bg.jpg') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, var(--bg-darker) 100%);
+            opacity: 0.7;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+            animation: fadeIn 1.5s ease-out;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, var(--text-highlight), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .hero-button {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--primary);
+        }
+        
+        .hero-button:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .scroll-prompt {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-secondary);
+            animation: bounce 2s infinite;
+        }
+        
+        .scroll-prompt i {
+            font-size: 2rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        
+        .content-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px 0 40px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-darker) 100%);
+            text-align: center;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        
+        header p.subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .main-section {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .left {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .right {
+            flex: 1;
+            min-width: 280px;
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-size: 1.4rem;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .card h2 i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+        
+        .main-video {
+            width: 100%;
+            border-radius: 8px;
+            aspect-ratio: 16/9;
+            background: #000;
+        }
+        
+        .thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+        
+        .thumbnails img {
+            width: 120px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+            border: 2px solid transparent;
+            height: 90px;
+        }
+        
+        .thumbnails img:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        .play-section {
+            text-align: center;
+            background: linear-gradient(135deg, var(--bg-card-light) 0%, var(--bg-card) 100%);
+            border-radius: 10px;
+            padding: 25px 15px;
+            margin: 25px 0;
+        }
+        
+        .play-button {
+            text-decoration: none;
+            color: white;
+            background: var(--primary);
+            padding: 12px 30px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .play-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .play-button i {
+            margin-right: 8px;
+        }
+        
+        /* Video Section */
+        .video-container {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        
+        .video-container iframe {
+            flex: 1;
+            min-width: 280px;
+            height: 160px;
+            border-radius: 8px;
+            background: #000;
+        }
+        
+        /* Character Section */
+        .character-container {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding-bottom: 15px;
+        }
+        
+        .character-card {
+            background: var(--bg-card-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 160px;
+            transition: all 0.3s ease;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .character-card img {
+            width: 100%;
+            border-radius: 8px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+        
+        .character-card h3 {
+            margin: 12px 0 5px;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+        
+        .character-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+        
+        /* Game Info */
+        .game-info img.logo {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid var(--accent);
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .info-item strong {
+            min-width: 100px;
+            display: inline-block;
+            color: var(--primary);
+        }
+        
+        .info-item p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .tag {
+            background: var(--bg-card-light);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .feature-item {
+            background: var(--bg-card-light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+            background: var(--bg-card);
+        }
+        
+        .feature-item i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .feature-item h4 {
+            margin: 0 0 5px;
+            color: var(--text-main);
+        }
+        
+        .feature-item p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        /* System Requirements */
+        .requirements {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .requirements {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .req-section {
+            background: var(--bg-card-light);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .req-section h4 {
+            margin-top: 0;
+            color: var(--primary);
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 5px;
+        }
+        
+        .req-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .req-item span:first-child {
+            color: var(--text-secondary);
+        }
+        
+        .req-item span:last-child {
+            color: var(--text-main);
+            font-weight: bold;
+        }
+        
+        /* Review Section */
+        .review {
+            background: var(--bg-card-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .reviewer img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .reviewer-info h5 {
+            margin: 0;
+            color: var(--text-main);
+        }
+        
+        .reviewer-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .rating {
+            color: #ffc107;
+            font-size: 1.2rem;
+        }
+        
+        .review-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+        
+        /* Screenshots */
+        .screenshots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .screenshot {
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            aspect-ratio: 16/9;
+            background: #000;
+            position: relative;
+        }
+        
+        .screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot:hover {
+            transform: scale(1.02);
+        }
+        
+        .screenshot:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--accent);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .social-links a {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Eclipse Manor</h1>
+            <p>Enter a world of psychological horror and unravel the manor's dark secrets</p>
+            <a href="#main" class="hero-button">Begin Your Descent</a>
+        </div>
+        <div class="scroll-prompt">
+            <i class='bx bx-chevron-down'></i>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main id="main" class="main-content">
+        <div class="container">
+            <header>
+                <h1>Eclipse Manor</h1>
+                <p class="subtitle">Chapter 1: Silent Echo</p>
+            </header>
+            
+            <div class="main-section">
+                <div class="left">
+                    <!-- Main Video Section -->
+                    <div class="card">
+                        <h2><i class='bx bx-play-circle'></i> Game Trailer</h2>
+                        <iframe class="main-video" src="https://www.youtube.com/embed/Tv_0g27BwRU" allowfullscreen></iframe>
+                        
+                        <div class="thumbnails">
+                            <img src="images/homepage/thumb1.png" alt="Gameplay screenshot 1">
+                            <img src="images/homepage/thumb2.png" alt="Gameplay screenshot 2">
+                            <img src="images/homepage/thumb3.png" alt="Character closeup">
+                            <img src="images/homepage/thumb4.png" alt="Environment shot">
+                            <img src="images/homepage/thumb5.png" alt="Puzzle mechanic">
+                        </div>
+                    </div>
+
+                    <!-- Play Section -->
+                    <div class="play-section">
+                        <h2>Begin Your Descent Into Darkness</h2>
+                        <p>Experience the horror that awaits in Eclipse Manor</p>
+                        <a href="main-screen.html" class="play-button">
+                            <i class='bx bx-play'></i> Play Now
+                        </a>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div class="card">
+                        <h2><i class='bx bx-star'></i> Key Features</h2>
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <i class='bx bx-ghost'></i>
+                                <h4>Atmospheric Horror</h4>
+                                <p>Immersive environments that chill to the bone</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class='bx bx-brain'></i>
+                                <h4>Challenging Puzzles</h4>
+                                <p>Solve intricate puzzles to uncover the truth</p>
+                            </div>
+                            <div class="feature-item">
+                                <i class='bx bx-book-open'></i>
+                                <h4>Deep Lore</h4>
+                                <p>Uncover the manor's dark history through clues</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gameplay Videos -->
+                    <div class="card">
+                        <h2><i class='bx bx-video'></i> Gameplay & Trailers</h2>
+                        <div class="video-container">
+                            <iframe src="https://www.youtube.com/embed/Tv_0g27BwRU" allowfullscreen></iframe>
+                            <iframe src="https://www.youtube.com/embed/Tv_0g27BwRU" allowfullscreen></iframe>
+                            <iframe src="https://www.youtube.com/embed/Tv_0g27BwRU" allowfullscreen></iframe>
+                        </div>
+                    </div>
+
+                    <!-- Achievements Section -->
+                    <div class="card">
+                        <h2><i class='bx bx-group'></i> Get Achievements</h2>
+                        <div class="character-container">
+                            <div class="character-card">
+                                <img src="images/homepage/achievement1.png" alt="achievement1">
+                                <h3>Keys...Please!!!</h3>
+                                <p>Obtain all keys</p>
+                            </div>
+                            <div class="character-card">
+                                <img src="images/homepage/achievement2.png" alt="achievement2">
+                                <h3>Egg Hunter</h3>
+                                <p>Uncover all easter eggs</p>
+                            </div>
+                            <div class="character-card">
+                                <img src="images/homepage/achievement3.png" alt="achievement3">
+                                <h3>Puzzle Machine</h3>
+                                <p>Complete all puzzles 1st try</p>
+                            </div>
+                            <div class="character-card">
+                                <img src="images/homepage/achievement4.png" alt="achievement4">
+                                <h3>"Book" Worm</h3>
+                                <p>Collect all journals</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screenshots -->
+                    <div class="card">
+                        <h2><i class='bx bx-image'></i> Screenshots</h2>
+                        <div class="screenshots">
+                            <div class="screenshot">
+                                <img src="images/homepage/screenshot1.png" alt="Main Hall">
+                            </div>
+                            <div class="screenshot">
+                                <img src="images/homepage/screenshot2.png" alt="Puzzle room">
+                            </div>
+                            <div class="screenshot">
+                                <img src="images/homepage/screenshot3.png" alt="Dining Room">
+                            </div>
+                            <div class="screenshot">
+                                <img src="images/homepage/screenshot4.png" alt="Piano Puzzle">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reviews -->
+                    <div class="card">
+                        <h2><i class='bx bx-edit'></i> What Players Say</h2>
+                        <div class="review">
+                            <div class="review-header">
+                                <div class="reviewer">
+                                    <img src="images/homepage/reviewer1.png" alt="Reviewer avatar">
+                                    <div class="reviewer-info">
+                                        <h5>HorrorFan69</h5>
+                                        <p>Verified Player</p>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star-half'></i>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p>"The atmosphere in Eclipse Manor is incredible. I actually had to stop playing a few times because I got too scared!"</p>
+                            </div>
+                        </div>
+                        <div class="review">
+                            <div class="review-header">
+                                <div class="reviewer">
+                                    <img src="images/homepage/reviewer2.png" alt="Reviewer avatar">
+                                    <div class="reviewer-info">
+                                        <h5>PuzzleMaster</h5>
+                                        <p>Verified Player</p>
+                                    </div>
+                                </div>
+                                <div class="rating">
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                    <i class='bx bxs-star'></i>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <p>"Finally a horror game with puzzles that actually make sense and are challenging without being frustrating."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right">
+                    <!-- Game Info -->
+                    <div class="card game-info">
+                        <img src="game-logo.png" alt="Eclipse Manor Logo" class="logo">
+                        <div class="info-item">
+                            <strong>Developer:</strong>
+                            <p>OJI Studios</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Publisher:</strong>
+                            <p>OJI Studios</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Release Date:</strong>
+                            <p>19 Apr, 2025</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Genre:</strong>
+                            <p>Dungeon Crawler, Horror, Puzzle Adventure</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Platforms:</strong>
+                            <p>PC, Laptop</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Price:</strong>
+                            <p>FREE</p>
+                        </div>
+                        <div class="info-item">
+                            <strong>Tags:</strong>
+                            <div class="tags">
+                                <span class="tag">Horror</span>
+                                <span class="tag">Singleplayer</span>
+                                <span class="tag">Puzzle</span>
+                                <span class="tag">Dungeon Crawler</span>
+                                <span class="tag">Atmospheric</span>
+                                <span class="tag">Thriller</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Requirements -->
+                    <div class="card">
+                        <h2><i class='bx bx-cog'></i> System Requirements</h2>
+                        <div class="requirements">
+                            <div class="req-section">
+                                <h4>Minimum</h4>
+                                <div class="req-item">
+                                    <span>OS:</span>
+                                    <span>Windows 10</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>CPU:</span>
+                                    <span>Intel i5-4460</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>RAM:</span>
+                                    <span>8 GB</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>GPU:</span>
+                                    <span>GTX 960</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>Storage:</span>
+                                    <span>15 GB</span>
+                                </div>
+                            </div>
+                            <div class="req-section">
+                                <h4>Recommended</h4>
+                                <div class="req-item">
+                                    <span>OS:</span>
+                                    <span>Windows 11</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>CPU:</span>
+                                    <span>Intel i7-8700</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>RAM:</span>
+                                    <span>16 GB</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>GPU:</span>
+                                    <span>RTX 2060</span>
+                                </div>
+                                <div class="req-item">
+                                    <span>Storage:</span>
+                                    <span>15 GB SSD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fun Facts -->
+                    <div class="card">
+                        <h2><i class='bx bx-info-circle'></i> Did You Know?</h2>
+                        <ul style="padding-left: 20px; color: var(--text-secondary);">
+                            <li>The manor is fully explorable</li>
+                            <li>There are many journals to discover</li>
+                            <li>Many lores hidden throughout the game</li>
+                            <li>Puzzles challenges the player in different aspects</li>
+                        </ul>
+                    </div>
+
+                    <!-- Development Insights -->
+                    <div class="card">
+                        <h2><i class='bx bx-code-alt'></i> Dev Insights</h2>
+                        <p style="color: var(--text-secondary);">
+                            "Eclipse Manor was inspired by classic horror films and novels. 
+                            We wanted to create an experience that stays with players long after they finish the game."
+                            <br><br>
+                            - OJI Studios Team
+                        </p>
+                    </div>
+
+                    <!-- Newsletter -->
+                    <div class="card">
+                        <h2><i class='bx bx-envelope'></i> Stay Updated</h2>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                            Sign up for news about Chapter 2 and exclusive content!
+                        </p>
+                        <form style="display: flex; gap: 10px;">
+                            <input type="email" placeholder="Your email" style="
+                                flex: 1;
+                                padding: 10px;
+                                border-radius: 5px;
+                                border: none;
+                                background: var(--bg-card-light);
+                                color: var(--text-main);
+                            ">
+                            <button type="submit" style="
+                                background: var(--primary);
+                                color: white;
+                                border: none;
+                                padding: 0 15px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                                transition: background 0.3s;
+                            ">
+                                <i class='bx bx-send'></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <footer>
+                <p>© 2025 OJI Studios. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class='bx bxl-twitter'></i></a>
+                    <a href="#"><i class='bx bxl-discord-alt'></i></a>
+                    <a href="https://www.youtube.com/@OJI_Studios"><i class='bx bxl-youtube'></i></a>
+                    <a href="#"><i class='bx bxl-instagram'></i></a>
+                </div>
+            </footer>
+        </div>
+    </main>
+
+    <script>
+        // Show main content when scrolled
+        document.addEventListener('DOMContentLoaded', function() {
+            const hero = document.querySelector('.hero');
+            const mainContent = document.querySelector('.main-content');
+            
+            function checkScroll() {
+                const heroHeight = hero.offsetHeight;
+                const scrollPosition = window.scrollY;
+                
+                if (scrollPosition > heroHeight * 0.5) {
+                    mainContent.classList.add('content-visible');
+                } else {
+                    mainContent.classList.remove('content-visible');
+                }
+            }
+            
+            // Initial check in case page loads with scroll
+            checkScroll();
+            
+            window.addEventListener('scroll', checkScroll);
+            
+            // Smooth scroll to main content
+            document.querySelector('.hero-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

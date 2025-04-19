@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Riddle Puzzle</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #1a1a1a, #333); /* Gradient dark background */
+      color: white;
+    }
+
+    #puzzle-box {
+      background: #2a2a2a; /* Slightly lighter dark background */
+      padding: 45px; /* Increased padding */
+      border-radius: 22.5px; /* Increased border radius */
+      text-align: center;
+      box-shadow: 0 6px 22.5px rgba(0, 0, 0, 0.5); /* Increased shadow */
+      max-width: 1200px; /* Increased max width */
+      width: 90%;
+    }
+
+    #puzzle-box h2 {
+      font-size: 42px; /* Increased font size */
+      margin-bottom: 30px; /* Increased margin */
+      color: #f0a500; /* Highlighted color for the title */
+    }
+
+    #puzzle-box p {
+      font-size: 33px; /* Increased font size */
+      margin-bottom: 30px; /* Increased margin */
+      line-height: 2.25; /* Increased line height */
+      text-align: justify; /* Justify the text for better readability */
+      max-width: 100%; /* Allow the text to span the full width of the container */
+    }
+
+    input {
+      padding: 18px; /* Increased padding */
+      font-size: 27px; /* Increased font size */
+      margin-top: 15px; /* Increased margin */
+      width: 100%;
+      max-width: 600px; /* Increased max width */
+      border: 1.5px solid #444; /* Increased border thickness */
+      border-radius: 12px; /* Increased border radius */
+      background: #1a1a1a;
+      color: white;
+      outline: none;
+      box-shadow: inset 0 3px 7.5px rgba(0, 0, 0, 0.5); /* Increased shadow */
+    }
+
+    input::placeholder {
+      color: #888;
+    }
+
+    button {
+      padding: 18px 37.5px; /* Increased padding */
+      margin-top: 22.5px; /* Increased margin */
+      font-size: 27px; /* Increased font size */
+      cursor: pointer;
+      border: none;
+      border-radius: 12px; /* Increased border radius */
+      background: #f0a500; /* Highlighted button color */
+      color: #1a1a1a;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    button:hover {
+      background: #d18e00; /* Darker hover effect */
+      transform: scale(1.05); /* Slight zoom effect */
+    }
+
+    #message {
+      margin-top: 22.5px; /* Increased margin */
+      font-size: 27px; /* Increased font size */
+      color: lightgreen;
+    }
+
+    #closeBtn {
+      margin-top: 30px; /* Increased margin */
+      background: #444;
+      color: white;
+      border: none;
+      font-size: 24px; /* Increased font size */
+      padding: 18px 37.5px; /* Increased padding */
+      border-radius: 12px; /* Increased border radius */
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #closeBtn:hover {
+      background: #555;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div id="puzzle-box">
+    <h2>Riddle:</h2>
+    <img src="images/puzzle/livingroom_puzzle.png" alt="Riddle Image" style="max-width: 100%; height: 400px; margin-bottom: 20px;">
+    <input type="text" id="answerInput" placeholder="Your answer here...">
+    <br>
+    <button id="submitBtn">Submit</button>
+    <p id="message"></p>
+  </div>
+
+  <script>
+    const input = document.getElementById("answerInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+
+    submitBtn.addEventListener("click", () => {
+      const answer = input.value.trim().toLowerCase();
+      if (answer === "hardtack") {
+        message.textContent = "✅ Correct! Closing puzzle...";
+        setTimeout(() => {
+          parent.postMessage({ puzzleSolved: true }, "*"); // ✅ Notify parent
+        }, 1000);
+      } else {
+        message.textContent = "❌ Wrong answer. Try again!";
+      }
+    });
+  </script>
+</body>
+</html>

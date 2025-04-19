@@ -1,0 +1,38 @@
+/* styles.css */
+body { 
+  text-align: center; 
+  background: black; 
+  color: white; 
+}
+
+#game-container { 
+  position: relative; 
+  width: 320px; 
+  height: 320px; 
+  margin: auto; 
+  border: 2px solid white; 
+  overflow: hidden;
+}
+
+.tile { 
+  position: absolute; 
+  width: 32px; 
+  height: 32px; 
+}
+
+.wall { 
+  background: gray; 
+}
+
+.floor { 
+  background: darkslategray; 
+}
+
+#player { 
+  position: absolute; 
+  width: 32px; 
+  height: 32px; 
+  background: red; /* Temporary placeholder */
+  top: 32px;
+  left: 32px;
+}

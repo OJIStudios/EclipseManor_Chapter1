@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eclipse Manor - End Credits</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      overflow: hidden;
+      height: 100vh;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .static-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.015) 0px,
+        rgba(255,255,255,0.015) 1px,
+        rgba(0,0,0,0.015) 2px
+      );
+      animation: flicker 1s infinite, staticMove 0.3s steps(2) infinite;
+    }
+
+    .static-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 2px 2px;
+      animation: staticNoise 0.2s steps(3) infinite;
+      opacity: 0.08;
+    }
+
+    @keyframes staticNoise {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(-1px, 1px); }
+      100% { transform: translate(1px, -1px); }
+    }
+
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      10% { opacity: 0.97; }
+      20% { opacity: 0.9; }
+      30% { opacity: 0.95; }
+      40% { opacity: 0.93; }
+      50% { opacity: 1; }
+      60% { opacity: 0.95; }
+      70% { opacity: 0.85; }
+      80% { opacity: 1; }
+      90% { opacity: 0.92; }
+    }
+
+    @keyframes staticMove {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-2px); }
+    }
+
+    .logo-only {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 400px;
+      max-width: 90%;
+      opacity: 1;
+      z-index: 2;
+      animation: fadeOutLogo 3s ease-in-out forwards;
+      animation-delay: 2s;
+    }
+
+    @keyframes fadeOutLogo {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .container {
+      position: absolute;
+      top: 100vh;
+      left: 0;
+      width: 100%;
+      opacity: 0;
+      animation: showCredits 1s ease forwards, scroll-up 40s linear forwards;
+      animation-delay: 6s, 6s;
+      z-index: 1;
+    }
+
+    @keyframes showCredits {
+      to { opacity: 1; }
+    }
+
+    @keyframes scroll-up {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-220vh); }
+    }
+
+    .credits {
+      width: 100%;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      letter-spacing: 3px;
+      text-shadow: 0 0 5px #fff;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin: 1.2rem 0;
+      color: #aaa;
+      filter: blur(0.3px);
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin: 0.6rem 0;
+      filter: blur(0.2px);
+    }
+
+    .thank-you {
+      position: absolute;
+      bottom: 10%;
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      opacity: 0;
+      z-index: 2;
+      animation: showThankYou 2s ease-in-out forwards;
+      animation-delay: 46s;
+      color: #ffffff;
+      text-shadow: 0 0 8px #fff;
+    }
+
+    @keyframes showThankYou {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scanline overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0%,
+          rgba(0, 0, 0, 0.2) 1px,
+          transparent 2px
+        );
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    /* Fade to black transition on click */
+    .fadeout {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 2s ease;
+      z-index: 999;
+    }
+
+    .fadeout.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+  <div class="static-bg"></div>
+
+  <img src="images/logo.png" alt="Eclipse Manor Logo" class="logo-only" />
+
+  <div class="container">
+    <div class="credits">
+      <h1>CHAPTER 1 - SILENT ECHO</h1>
+
+      <h2>Directed by</h2>
+      <p>Chong Lok Phen</p>
+
+      <h2>Project Manager</h2>
+      <p>Hew Joe Vi</p>
+
+      <h2>Programmers</h2>
+      <p>Chong Lok Phen</p>
+      <p>Hew Joe Vi</p>
+
+      <h2>Lead Designer</h2>
+      <p>Chong Lok Phen</p>
+
+      <h2>UI/UX Designer</h2>
+      <p>Ivan Chong</p>
+
+      <h2>Artists</h2>
+      <p>Chong Lok Phen</p>
+      <p>Hew Joe Vi</p>
+      <p>Ivan Chong</p>
+
+      <h2>Music Production</h2>
+      <p>ZHRØ from Freesound</p>
+      <p>TEDAgame from Freesound</p>
+      <p>Tesabob2001 from Freesound</p>
+      <p>Wax_vibe from Freesound</p>
+
+      <h2>Special Thanks</h2>
+      <p>Mdm Aishah <3</p>
+
+      <h2>© 2025 Eclipse Manor</h2>
+    </div>
+  </div>
+
+  <div class="thank-you">Thank You for Playing</div>
+
+  <div class="fadeout" id="fade"></div>
+
+  <script>
+    let pressed = 0;
+    document.body.addEventListener('click', function() {
+      if(pressed == 0){
+        pressed++;
+      }
+      else{
+        const fade = document.getElementById('fade');
+        fade.classList.add('active');
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
+      }
+    });
+
+    // Create the audio element
+    const bgMusic = new Audio('music/endcreditsmusic.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.5;
+
+    // Try autoplay
+    window.addEventListener('load', () => {
+      bgMusic.play().then(() => {
+        console.log("Autoplay success");
+      }).catch(err => {
+        console.warn("Autoplay blocked. Waiting for user interaction...");
+      });
+    });
+
+    // Resume music on first user interaction
+    document.addEventListener('click', () => {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        console.log("Music started after click");
+      }
+    });
+  </script>
+</body>
+</html>

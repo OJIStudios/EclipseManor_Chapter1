@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Piano Sequence Puzzle</title>
+  <style>
+    :root {
+      --bg-color: #1a0b00;
+      --text-color: #333;
+      --container-bg: #3e1f00;
+      --key-bg: #ffffff; /* Piano colors remain constant */
+      --key-border: #000;
+      --pressed-key-bg: #e0e0e0;
+      --black-key-bg: #000;
+      --black-key-pressed-bg: #333;
+      --success-color: #4caf50;
+      --error-color: #f44336;
+      --white-key-text-color: #000; /* Text color for white keys */
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #121212;
+        --text-color: #e0e0e0;
+        --container-bg: #1e1e1e;
+        --success-color: #81c784;
+        --error-color: #e57373;
+      }
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Arial', sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #puzzle-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    #instructions {
+      text-align: center;
+      padding: 20px;
+      background: var(--container-bg);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #note-sequence {
+      font-size: 32px;
+      margin: 15px 0;
+      letter-spacing: 5px;
+      font-weight: bold;
+    }
+
+    #message {
+      height: 30px;
+      font-size: 24px;
+      text-align: center;
+      margin: 10px 0;
+    }
+
+    .success {
+      color: var(--success-color);
+    }
+
+    .error {
+      color: var(--error-color);
+    }
+
+    #piano-container {
+      margin-top: auto;
+      width: 100%;
+      position: relative;
+      height: 310px; /* Increased height (was 50vh) */
+      min-height: 300px; /* Increased minimum height (was 300px) */
+      background: var(--container-bg);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #1a0b00;
+    }
+
+    #piano-frame {
+      position: relative;
+      width: 95%; /* Slightly increased width (was 90%) */
+      max-width: 1200px; /* Increased max width (was 1200px) */
+      height: 95%; /* Increased height (was 90%) */
+      border: 4px solid #432d00; /* Golden yellow border remains the same */
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #keys {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+
+    .white-key {
+      position: relative;
+      background: var(--key-bg); /* Piano colors remain constant */
+      border: 1px solid var(--key-border);
+      flex: 1;
+      height: 100%; /* Scales with the container */
+      z-index: 1;
+      box-sizing: border-box;
+    }
+
+    .white-key:last-child {
+      border-right: 1px solid var(--key-border);
+    }
+
+    .black-key {
+      position: absolute;
+      background: var(--black-key-bg); /* Piano colors remain constant */
+      height: 65%; /* Scales with the white key height */
+      width: 60px; /* Fixed width for realism */
+      z-index: 2;
+      top: 0;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      pointer-events: auto;
+    }
+
+    .white-key.pressed {
+      background: var(--pressed-key-bg);
+    }
+
+    .black-key.pressed {
+      background: var(--black-key-pressed-bg);
+    }
+
+    .note-label {
+      position: absolute;
+      bottom: 15px;
+      width: 100%;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: var(--text-color);
+      pointer-events: none;
+    }
+
+    .white-key .note-label {
+      color: var(--white-key-text-color); /* Ensure text on white keys is black */
+    }
+
+    .black-key .note-label {
+      color: white; /* Text on black keys remains white */
+      bottom: 40px;
+      font-size: 16px;
+    }
+
+    #instructions {
+      padding: 10px;
+      margin-bottom: 0;
+    }
+
+    #note-sequence {
+      font-size: 48px;
+      margin: 5px 0;
+      font-weight: bold;
+      letter-spacing: 10px;
+      text-align: center;
+    }
+
+    #theme-toggle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background: var(--container-bg);
+      color: var(--text-color);
+      border: 1px solid var(--key-border);
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="puzzle-container">
+    <div id="instructions">
+      <div class="note-sequence">
+        <img src="images/puzzle/diningroom_puzzle.png" alt="Note Sequence" id="note-sequence-img" style="max-width: 100%; height: 250px; margin-bottom: -50px;">
+      </div>      
+      <div id="message"></div>
+    </div>
+
+    <div id="piano-container">
+      <div id="piano-frame">
+        <div id="keys">
+          <!-- Keys will be generated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const notes = [
+      { note: "C", isBlack: false }, { note: "C#", isBlack: true },
+      { note: "D", isBlack: false }, { note: "D#", isBlack: true },
+      { note: "E", isBlack: false },
+      { note: "F", isBlack: false }, { note: "F#", isBlack: true },
+      { note: "G", isBlack: false }, { note: "G#", isBlack: true },
+      { note: "A", isBlack: false }, { note: "A#", isBlack: true },
+      { note: "B", isBlack: false },
+      { note: "C2", isBlack: false }, { note: "C#2", isBlack: true },
+      { note: "D2", isBlack: false }, { note: "D#2", isBlack: true },
+      { note: "E2", isBlack: false },
+      { note: "F2", isBlack: false }, { note: "F#2", isBlack: true },
+      { note: "G2", isBlack: false }, { note: "G#2", isBlack: true },
+      { note: "A2", isBlack: false }, { note: "A#2", isBlack: true },
+      { note: "B2", isBlack: false }
+    ];
+  
+    const generatedSequence = ["C", "E", "G", "E", "D", "B", "A", "G", "E2", "G2", "A2", "B2", "C2", "E2", "G2", "A2", "B", "G#", "F", "E", "D", "C", "E", "C2", "B", "D2", "E2", "F2", "G2", "C2"]; // 🎯 Set your custom sequence here!
+    let userInput = [];
+  
+    function createPianoKeys() {
+      const keysContainer = document.getElementById("keys");
+      const whiteNotes = notes.filter(n => !n.isBlack);
+      const whiteKeyElements = [];
+  
+      whiteNotes.forEach((noteObj, index) => {
+        const whiteKey = document.createElement("div");
+        whiteKey.className = "white-key";
+        whiteKey.dataset.note = noteObj.note;
+        whiteKey.dataset.index = index;
+  
+        const label = document.createElement("div");
+        label.className = "note-label";
+        label.textContent = noteObj.note;
+        whiteKey.appendChild(label);
+  
+        keysContainer.appendChild(whiteKey);
+        whiteKeyElements.push(whiteKey);
+      });
+  
+      const blackKeyPositions = [
+        { note: "C#", afterWhite: "C" },
+        { note: "D#", afterWhite: "D" },
+        { note: "F#", afterWhite: "F" },
+        { note: "G#", afterWhite: "G" },
+        { note: "A#", afterWhite: "A" },
+        { note: "C#2", afterWhite: "C2" },
+        { note: "D#2", afterWhite: "D2" },
+        { note: "F#2", afterWhite: "F2" },
+        { note: "G#2", afterWhite: "G2" },
+        { note: "A#2", afterWhite: "A2" }
+      ];
+  
+      blackKeyPositions.forEach(pos => {
+        const precedingWhite = whiteKeyElements.find(el => el.dataset.note === pos.afterWhite);
+        if (precedingWhite) {
+          const blackKey = document.createElement("div");
+          blackKey.className = "black-key";
+          blackKey.dataset.note = pos.note;
+  
+          const label = document.createElement("div");
+          label.className = "note-label";
+          label.textContent = pos.note;
+          blackKey.appendChild(label);
+  
+          // Position the black key
+          const whiteIndex = parseInt(precedingWhite.dataset.index);
+          const keyWidth = 100 / whiteKeyElements.length;
+          const leftPercent = keyWidth * (whiteIndex + 0.65);
+          blackKey.style.left = `${leftPercent}%`;
+  
+          keysContainer.appendChild(blackKey);
+        }
+      });
+  
+      // Add click listeners
+      document.querySelectorAll(".white-key, .black-key").forEach(key => {
+        key.addEventListener("click", () => {
+          const note = key.getAttribute("data-note");
+          playNote(note);
+          
+          key.classList.add("pressed");
+          setTimeout(() => key.classList.remove("pressed"), 150);
+  
+          userInput.push(note);
+          checkSequence();
+        });
+      });
+    }
+  
+    function checkSequence() {
+      const messageBox = document.getElementById("message");
+  
+      for (let i = 0; i < userInput.length; i++) {
+        if (userInput[i] !== generatedSequence[i]) {
+          messageBox.textContent = "Wrong sequence!";
+          messageBox.className = "error";
+          userInput = [];
+          return;
+        }
+      }
+  
+      if (userInput.length === generatedSequence.length) {
+        messageBox.textContent = "Correct!";
+        messageBox.className = "success";
+        userInput = [];
+        setTimeout(() => {
+          parent.postMessage({ puzzleSolved: true }, "*"); // ✅ Notify parent
+        }, 1000);
+      } else {
+        messageBox.textContent = "";
+      }
+    }
+    createPianoKeys();
+
+    function playNote(note) {
+      // Base folder where the sound files are stored
+      const baseFolder = "music/keys/"; // Updated folder name
+
+      // Map notes to their corresponding sound file names
+      const noteToSound = {
+        "C": "c4.mp3", "C#": "csharp4.mp3", "D": "d4.mp3", "D#": "dsharp4.mp3", "E": "e4.mp3", 
+        "F": "f4.mp3", "F#": "fsharp4.mp3", "G": "g4.mp3", "G#": "gsharp4.mp3", "A": "a4.mp3", 
+        "A#": "a#4.mp3", "B": "b4.mp3",
+        "C2": "c5.mp3", "C#2": "csharp5.mp3", "D2": "d5.mp3", "D#2": "dsharp5.mp3", "E2": "e5.mp3", 
+        "F2": "f5.mp3", "F#2": "fsharp5.mp3", "G2": "g5.mp3", "G#2": "gsharp5.mp3", "A2": "a5.mp3", 
+        "A#2": "asharp5.mp3", "B2": "b5.mp3"
+      };
+
+      // Get the sound file for the note
+      const soundFile = noteToSound[note];
+
+      if (!soundFile) {
+        console.log(`No sound file mapped for note: ${note}`);
+        return;
+      }
+
+      // Create a new Audio object and play the sound
+      const audio = new Audio(baseFolder + soundFile);
+      audio.play();
+    }
+  </script>
+  
+</body>
+</html>

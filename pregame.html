@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Content Warning</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
+
+    .warning-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      color: white;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+      opacity: 1;
+      transition: opacity 1.5s ease-in-out;
+    }
+
+    .warning-box {
+      max-width: 700px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2.5rem;
+      border: 1px solid white;
+      border-radius: 10px;
+    }
+
+    .warning-box h1 {
+      color: red;
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .warning-box p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin: 1rem 0;
+    }
+
+    .continueHint {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      opacity: 0.8;
+      animation: blink 1s step-start infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .fade-out {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="warningScreen" class="warning-screen">
+    <div class="warning-box">
+      <h1>⚠️ Content Warning</h1>
+      <p>This game contains intense horror elements, including sudden loud noises, flashing lights, psychological horror, and disturbing imagery.</p>
+      <p>It is not recommended for players who are sensitive to jumpscares, anxiety-inducing environments, or unsettling themes.</p>
+      <p>Headphones are recommended for the best experience — but proceed with caution.</p>
+      <p class="continueHint">Press [E] to continue</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("keydown", (e) => {
+      if (e.key.toLowerCase() === "e") {
+        const screen = document.getElementById("warningScreen");
+        screen.classList.add("fade-out");
+        setTimeout(() => {
+          window.location.href = "game.html"; // Change this if your game file is named differently
+        }, 1500);
+      }
+    });
+  </script>
+</body>
+</html>
