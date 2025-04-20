@@ -30,9 +30,21 @@ ESC - Exit Fullscreen
 
 ## Development
 
-## Engine: 
+**Engine:**
 
-**Current Progress
+Built from scratch using HTML, CSS, and JavaScript (no game engine)
+
+**Graphics:**
+
+Pixel Art, hand-drawn style, created using Piskel
+
+**Audio:**
+
+Sound effects sourced from Freesound.org
+
+Background ambience and horror SFX curated for atmosphere
+
+## Current Progress
 - Core gameplay loop functional
 - Room generation & transitions implemented
 - Lore system in progress
@@ -61,12 +73,10 @@ You don’t just explore Eclipse Manor...
 
 **It explores you.**
 
-## 🐞 Bug Fixes Log
+## Bug Fixes Log
 
 **2025-04-20**
-- Fixed combat freeze bug when player HP is at exactly 1
-- Resolved sprite layering issue in Mirror Hallway
+- Fixed the journal icon from not being able to load
 
-**2025-04-15**
-- Fixed infinite loading screen after solving second ritual puzzle
-
+**2025-04-19**
+- Fixed the images from not being able to load
