@@ -61,7 +61,7 @@ button:hover{
   --light-color: rgba(255, 255, 255, 0.15); /* default light */
 
   mask-image: radial-gradient(
-    circle 30px at var(--x, 50%) var(--y, 50%),
+    circle 100px at var(--x, 50%) var(--y, 50%),
     var(--light-color) 0%,
     rgba(0, 0, 0, 0.97) 70%
   );
